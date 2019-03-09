@@ -2,37 +2,23 @@ import * as React from "react";
 import { Segment } from "semantic-ui-react";
 
 import './App.scss';
+import {observer} from 'mobx-react';
+import {lazyInject} from './IoC';
+import {CounterStore} from './CounterStore';
 
-interface IProps {
-    startCount?: number;
-}
-
-interface IState {
-    counter: number;
-}
-
-class App extends React.Component<IProps, IState> {
-
-    constructor(props: IProps) {
-        super(props);
-
-        this.state = {
-            counter: props.startCount
-        }
-    }
+@observer
+class App extends React.Component {
+    @lazyInject(CounterStore)
+    counterStore: CounterStore;
 
     render() {
         return (
             <Segment>
                 <h1>React webpack</h1>
-                <p>Counter: {this.state.counter}</p>
-                <button onClick={() => this.setState({ counter: this.state.counter + 1 })}>Plus</button>
+                <p>Counter: {this.counterStore.counter}</p>
+                <button onClick={this.counterStore.increment}>Plus</button>
             </Segment>
         );
-    }
-
-    static defaultProps: IProps = {
-        startCount: 0
     }
 }
 
