@@ -1,7 +1,8 @@
 import { observable, reaction } from "mobx";
 
+
 export class Binary {
-    public static binaryRegexp = /^$|^1[01]*$/;
+    public static binaryRegexp = /^[01]*$/;
 
     public static toBinaryString(value: number) {
         return (value >>> 0).toString(2);
