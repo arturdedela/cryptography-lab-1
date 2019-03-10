@@ -9,10 +9,10 @@ describe("Binary class", () => {
 
         const b = new Binary("1011");
         expect(b.valueOf()).toEqual(11);
-    });
 
-    it("Should throw Error on set incorrect type", () => {
-        expect(() => new Binary(-2)).toThrowError();
+        const neg = new Binary(-7);
+        expect(neg.valueOf()).toEqual(-7);
+        expect(neg.toString()).toEqual("11111111111111111111111111111001");
     });
 
     it("Should trigger reaction on binary or integer change", () => {

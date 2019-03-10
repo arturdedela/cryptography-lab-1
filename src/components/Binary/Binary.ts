@@ -4,13 +4,12 @@ export class Binary {
     public static binaryRegexp = /^$|^1[01]*$/;
 
     public static toBinaryString(value: number) {
-        let res = "";
-        while (value) {
-            res = (value & 1) + res;
-            value >>= 1;
-        }
+        return (value >>> 0).toString(2);
+    }
 
-        return res;
+    public static toNumber(value: string) {
+        // Before a bitwise operation is performed, JavaScript converts numbers to 32 bits signed integers.
+        return parseInt(value, 2) << 0;
     }
 
     @observable private binary: string;
@@ -20,10 +19,6 @@ export class Binary {
         if (typeof v === "string") {
             this.binary = v;
         } else if (typeof v === "number") {
-            if (v < 0) {
-                throw new TypeError("Negative numbers not supported yet");
-            }
-
             this.integer = v;
         } else {
             throw new TypeError();
@@ -34,9 +29,10 @@ export class Binary {
         reaction(() => this.integer, integer => {
             this.binary = Binary.toBinaryString(integer);
         });
-
+        // Think how to get rid of redundant reaction.
+        // Change binary => Reaction change integer => Reaction change binary (binary doesn't change) => End;
         reaction(() => this.binary, binary => {
-            this.integer = parseInt(binary, 2);
+            this.integer = Binary.toNumber(binary);
         });
 
         this.value = value;
