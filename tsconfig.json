@@ -8,7 +8,10 @@
         "jsx": "react",
         "noImplicitAny": true,
         "experimentalDecorators": true,
-        "emitDecoratorMetadata": true
+        "emitDecoratorMetadata": true,
+        "strict": true,
+        "strictPropertyInitialization": false,
+        "noUnusedLocals": true
     },
     "include": [
         "./src/**/*"
