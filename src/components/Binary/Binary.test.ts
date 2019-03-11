@@ -63,5 +63,11 @@ describe("Binary class", () => {
         expect(a.getInnerBits(3, 3)).toEqual("011101");
     });
 
+    it("Should swap bytes", () => {
+        const a = new Binary("1111000000001111");
+        a.swapBytes(0, 1);
+        expect(a.toString(16)).toEqual("0000111111110000");
+    });
+
 });
 

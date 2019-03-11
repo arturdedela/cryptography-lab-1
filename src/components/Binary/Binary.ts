@@ -78,7 +78,24 @@ export class Binary {
         return this.binary.substring(msbCnt, this.binary.length - lsbCnt);
     }
 
-    public toString(): string {
+    public swapBytes(i: number, j: number) {
+        if (i < 0 || i > 3 || j < 0 || j > 4) {
+            throw new Error();
+        }
+
+        const bytes = this.toString(32).match(/\d{8}/g)!;
+        const tmp = bytes[3 - i];
+        bytes[3 - i] = bytes[3 - j];
+        bytes[3 - j] = tmp;
+
+        this.value = Binary.toNumber(bytes.join(""));
+    }
+
+    public toString(pad?: number): string {
+        if (pad) {
+            return this.binary.padStart(pad, "0");
+        }
+
         return this.binary;
     }
 
