@@ -4,9 +4,12 @@ import { action, observable } from "mobx";
 import { observer } from "mobx-react";
 import { Binary } from "../Binary/Binary";
 
+import "./style.scss";
+
 interface IProps {
     onChange?: (value: string) => void;
     value?: string;
+    label?: string;
 }
 
 @observer
@@ -24,13 +27,16 @@ class BinaryInput extends React.Component<IProps> {
         const value = this.controlled ? this.props.value! : this.binaryString;
 
         return (
-            <Input
-                value={value}
-                placeholder="Enter binary digit"
-                onChange={this.handleChange}
-                labelPosition="right"
-                label={Binary.toNumber(value)}
-            />
+            <div className="binary-input">
+                {this.props.label && <label className="binary-input__label">{this.props.label}</label>}
+                <Input
+                    value={value}
+                    placeholder="Enter binary digit"
+                    onChange={this.handleChange}
+                    labelPosition="right"
+                    label={Binary.toNumber(value)}
+                />
+            </div>
         );
     }
 
