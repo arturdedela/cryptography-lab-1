@@ -94,6 +94,18 @@ export class Binary {
         return this.binary.length - 1;
     }
 
+    public xorBits() {
+        let i = 0;
+        let n = this.integer;
+
+        while (n) {
+            i = i ^ (n & 1);
+            n = n >> 1;
+        }
+
+        return i;
+    }
+
     public toString(pad?: number): string {
         if (pad) {
             return this.binary.padStart(pad, "0");
