@@ -18,7 +18,7 @@ export class Binary {
 
     public set value(v: string | number) {
         if (typeof v === "string") {
-            this.binary = v;
+            this.integer = Binary.toNumber(v);
         } else if (typeof v === "number") {
             this.integer = v;
         } else {
@@ -29,11 +29,6 @@ export class Binary {
     constructor(value: string | number = 0) {
         reaction(() => this.integer, integer => {
             this.binary = Binary.toBinaryString(integer);
-        });
-        // Think how to get rid of redundant reaction.
-        // Change binary => Reaction change integer => Reaction change binary (binary doesn't change) => End;
-        reaction(() => this.binary, binary => {
-            this.integer = Binary.toNumber(binary);
         });
 
         this.value = value;
