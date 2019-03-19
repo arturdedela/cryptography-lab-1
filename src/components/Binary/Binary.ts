@@ -91,6 +91,10 @@ export class Binary {
         this.value = Binary.toNumber(bytes.join(""));
     }
 
+    public maxDividePowerOf2() {
+        return Math.log2(this.integer & -this.integer);
+    }
+
     public toString(pad?: number): string {
         if (pad) {
             return this.binary.padStart(pad, "0");

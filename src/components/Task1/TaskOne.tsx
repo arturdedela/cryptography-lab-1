@@ -29,16 +29,6 @@ class TaskOne extends React.Component {
                     />
                 </Form.Field>
 
-                <Statistic size="mini" floated="right">
-                    <Statistic.Value>{this.binary.getBit(this.j)}</Statistic.Value>
-                    <Statistic.Label>j-th bit</Statistic.Label>
-                </Statistic>
-
-                <Statistic size="mini" floated="right">
-                    <Statistic.Value>{this.binary.getBit(this.i)}</Statistic.Value>
-                    <Statistic.Label>i-th bit</Statistic.Label>
-                </Statistic>
-
                 <Form.Group unstackable inline>
                     <Form.Input
                         label="i"
@@ -60,6 +50,21 @@ class TaskOne extends React.Component {
                     />
                 </Form.Group>
 
+                <Statistic size="mini">
+                    <Statistic.Value>{this.binary.getBit(this.i)}</Statistic.Value>
+                    <Statistic.Label>i-th bit</Statistic.Label>
+                </Statistic>
+
+                <Statistic size="mini">
+                    <Statistic.Value>{this.binary.getBit(this.j)}</Statistic.Value>
+                    <Statistic.Label>j-th bit</Statistic.Label>
+                </Statistic>
+
+                <Statistic size="mini">
+                    <Statistic.Value>{this.binary.maxDividePowerOf2()}</Statistic.Value>
+                    <Statistic.Label>Max divide power of 2</Statistic.Label>
+                </Statistic>
+
                 <Divider />
 
                 <div className="mb-4">
@@ -78,25 +83,15 @@ class TaskOne extends React.Component {
                     </Button.Group>
                 </div>
 
-                <div className="mb-4">
-                    <Button type="button" onClick={this.onSwapClick}>Swap i-th and j-th bits</Button>
-                </div>
+                <Button type="button" onClick={this.onSwapClick}>Swap i-th and j-th bits</Button>
 
-                <div className="mb-4">
-                    <Button type="button" onClick={this.onResetClick}>Reset i LSBs</Button>
-                </div>
+                <Button type="button" onClick={this.onResetClick}>Reset i LSBs</Button>
 
-                <div className="mb-4">
-                    <Button type="button" onClick={this.onConcatClick}>Concat i MSBs and j LSBs</Button>
-                </div>
+                <Button type="button" onClick={this.onConcatClick}>Concat i MSBs and j LSBs</Button>
 
-                <div className="mb-4">
-                    <Button type="button" onClick={this.onGetInnerClick}>Get inner bits between i and j</Button>
-                </div>
+                <Button type="button" onClick={this.onGetInnerClick}>Get inner bits between i and j</Button>
 
-                <div className="mb-4">
-                    <Button type="button" onClick={this.onSwapBytesClick}>Swap i-th and j-th bytes</Button>
-                </div>
+                <Button type="button" onClick={this.onSwapBytesClick}>Swap i-th and j-th bytes</Button>
             </Form>
         );
     }
