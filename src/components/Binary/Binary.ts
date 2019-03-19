@@ -90,6 +90,10 @@ export class Binary {
         return Math.log2(this.integer & -this.integer);
     }
 
+    public getPower_2_5() {
+        return this.binary.length - 1;
+    }
+
     public toString(pad?: number): string {
         if (pad) {
             return this.binary.padStart(pad, "0");

@@ -65,6 +65,11 @@ class TaskOne extends React.Component {
                     <Statistic.Label>Max divide power of 2</Statistic.Label>
                 </Statistic>
 
+                <Statistic size="mini">
+                    <Statistic.Value>{this.binary.getPower_2_5()}</Statistic.Value>
+                    <Statistic.Label>2.5. Power <i>p</i></Statistic.Label>
+                </Statistic>
+
                 <Divider />
 
                 <div className="mb-4">
