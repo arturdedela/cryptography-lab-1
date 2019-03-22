@@ -12,6 +12,7 @@ class TaskOne extends React.Component {
     @observable private binary: Binary = new Binary();
     @observable private i: number = 0;
     @observable private j: number = 0;
+    private bitsOrder: string;
 
     public render() {
         return (
@@ -105,10 +106,21 @@ class TaskOne extends React.Component {
                     <Button type="button" onClick={this.onSwapBytesClick}>Swap i-th and j-th bytes</Button>
                 </div>
 
-                <div>
+                <div className="mb-3">
                     <Button type="button" onClick={this.onLeftShiftClick}>Left shift by i</Button>
 
                     <Button type="button" onClick={this.onRightShiftClick}>Right shift by i</Button>
+                </div>
+                
+                <div>
+                    <Form.Group>
+                        <Form.Input
+                            width={10}
+                            label="Bits order:"
+                            onChange={this.onBitsOrderChange}
+                        />
+                        <Button type="button" onClick={this.onReshuffleClick}>Reshuffle bits</Button>
+                    </Form.Group>
                 </div>
 
             </Form>
@@ -175,6 +187,20 @@ class TaskOne extends React.Component {
     @bind
     private onLeftShiftClick() {
         this.binary.leftShift(this.i);
+    }
+    
+    @bind
+    private onBitsOrderChange(e: React.ChangeEvent, data: InputOnChangeData) {
+        this.bitsOrder = data.value;
+    }
+    
+    @bind
+    private onReshuffleClick() {
+        this.binary.reshuffle(
+            this.bitsOrder
+                .split(",")
+                .map(n => parseInt(n, 10))
+        );
     }
 }
 

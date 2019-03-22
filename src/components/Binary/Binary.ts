@@ -114,6 +114,16 @@ export class Binary {
         this.integer = ((this.integer >>> n) | (this.integer << (32 - n))) >>> 0;
     }
 
+    public reshuffle(bitsOrder: number[]) {
+        let reshuffled = 0;
+
+        bitsOrder.reverse().forEach((order, i) => {
+            reshuffled |= (this.integer >> order & 1) << i;
+        });
+
+        this.integer = reshuffled;
+    }
+
     public toString(pad?: number): string {
         if (pad) {
             return this.binary.padStart(pad, "0");

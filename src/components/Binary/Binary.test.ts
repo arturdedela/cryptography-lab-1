@@ -79,5 +79,19 @@ describe("Binary class", () => {
         expect(a.toString()).toEqual("10000000000000000000000000000000");
     });
 
+    it("Should reshuffle bits", () => {
+        const a = new Binary("10101110");
+
+        a.reshuffle([5, 3, 7, 1, 4, 0, 6, 2]);
+        expect(a.toString()).toEqual("11110001");
+
+        a.reshuffle([7, 6, 5, 4, 3, 2, 0, 1]);
+        expect(a.toString()).toEqual("11110010");
+
+        a.value = "10";
+        a.reshuffle([0, 1]);
+        expect(a.toString()).toEqual("1");
+    });
+
 });
 
