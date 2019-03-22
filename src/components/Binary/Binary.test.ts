@@ -69,5 +69,15 @@ describe("Binary class", () => {
         expect(a.toString(16)).toEqual("0000111111110000");
     });
 
+    it("Should do left/right shift", () => {
+        const a = new Binary("10000000000000000000000000000000");
+
+        a.leftShift(1);
+        expect(a.toString()).toEqual("1");
+
+        a.rightShift(1);
+        expect(a.toString()).toEqual("10000000000000000000000000000000");
+    });
+
 });
 

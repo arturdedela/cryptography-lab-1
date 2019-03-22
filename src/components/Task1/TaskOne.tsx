@@ -93,15 +93,24 @@ class TaskOne extends React.Component {
                     </Button.Group>
                 </div>
 
-                <Button type="button" onClick={this.onSwapClick}>Swap i-th and j-th bits</Button>
+                <div className="mb-3">
+                    <Button type="button" onClick={this.onSwapClick}>Swap i-th and j-th bits</Button>
 
-                <Button type="button" onClick={this.onResetClick}>Reset i LSBs</Button>
+                    <Button type="button" onClick={this.onResetClick}>Reset i LSBs</Button>
 
-                <Button type="button" onClick={this.onConcatClick}>Concat i MSBs and j LSBs</Button>
+                    <Button type="button" onClick={this.onConcatClick}>Concat i MSBs and j LSBs</Button>
 
-                <Button type="button" onClick={this.onGetInnerClick}>Get inner bits between i and j</Button>
+                    <Button type="button" onClick={this.onGetInnerClick}>Get inner bits between i and j</Button>
 
-                <Button type="button" onClick={this.onSwapBytesClick}>Swap i-th and j-th bytes</Button>
+                    <Button type="button" onClick={this.onSwapBytesClick}>Swap i-th and j-th bytes</Button>
+                </div>
+
+                <div>
+                    <Button type="button" onClick={this.onLeftShiftClick}>Left shift by i</Button>
+
+                    <Button type="button" onClick={this.onRightShiftClick}>Right shift by i</Button>
+                </div>
+
             </Form>
         );
     }
@@ -156,6 +165,16 @@ class TaskOne extends React.Component {
     @bind
     private onSwapBytesClick() {
         this.binary.swapBytes(this.i, this.j);
+    }
+
+    @bind
+    private onRightShiftClick() {
+        this.binary.rightShift(this.i);
+    }
+
+    @bind
+    private onLeftShiftClick() {
+        this.binary.leftShift(this.i);
     }
 }
 

@@ -100,10 +100,18 @@ export class Binary {
 
         while (n) {
             i = i ^ (n & 1);
-            n = n >> 1;
+            n = n >>> 1;
         }
 
         return i;
+    }
+
+    public leftShift(n: number) {
+        this.integer = (this.integer << n) | (this.integer >>> (32 - n));
+    }
+
+    public rightShift(n: number) {
+        this.integer = ((this.integer >>> n) | (this.integer << (32 - n))) >>> 0;
     }
 
     public toString(pad?: number): string {
