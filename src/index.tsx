@@ -2,5 +2,11 @@ import "semantic-ui-css/semantic.min.css";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import App from "./App";
+import { BrowserRouter } from "react-router-dom";
 
-ReactDOM.render(<App />, document.getElementById("root"));
+
+ReactDOM.render(
+    <BrowserRouter>
+        <App />
+    </BrowserRouter>,
+    document.getElementById("root"));
