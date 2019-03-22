@@ -8,7 +8,7 @@ import bind from "../../decorators/bind";
 
 
 @observer
-class TaskOne extends React.Component {
+class Home extends React.Component {
     @observable private binary: Binary = new Binary();
     @observable private i: number = 0;
     @observable private j: number = 0;
@@ -204,4 +204,4 @@ class TaskOne extends React.Component {
     }
 }
 
-export default TaskOne;
+export default Home;

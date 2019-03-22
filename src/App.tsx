@@ -1,22 +1,24 @@
 import * as React from "react";
-import { Container } from "semantic-ui-react";
-
 import "./App.scss";
+import { Container } from "semantic-ui-react";
 import { observer } from "mobx-react";
+import { Route } from "react-router";
 import Navbar from "./components/Navbar/Navbar";
-import TaskOne from "./components/Task1/TaskOne";
+import Home from "./components/Home/Home";
+import Encryption from "./components/Encryption/Encryption";
+
 
 @observer
 class App extends React.Component {
 
     public render() {
-
         return (
             <>
                 <Navbar />
 
                 <Container style={{ marginTop: "6em" }}>
-                    <TaskOne />
+                    <Route exact path="/" component={Home} />
+                    <Route path="/encrypt" component={Encryption} />
                 </Container>
             </>
         );
