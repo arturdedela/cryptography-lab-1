@@ -4,6 +4,7 @@ import { observer } from "mobx-react";
 import * as Worker from "./encrypt.worker";
 import { AlgorithmNames } from "../algorithms";
 import { IEncryptData, isFinishMessage, isProgressMessage } from "./types";
+import { Progress } from "semantic-ui-react";
 
 interface IProps {
     file: ArrayBuffer;
@@ -39,7 +40,9 @@ class Encrypt extends React.Component<IProps> {
     public render() {
 
         return (
-            <div>Encrypting...({this.progress}%)</div>
+            <Progress progress="percent" percent={this.progress} color="violet">
+                Encrypting...
+            </Progress>
         );
     }
 }
