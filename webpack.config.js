@@ -5,7 +5,8 @@ module.exports = {
     entry: "./src/index.tsx",
     output: {
         path: path.join(__dirname, "/dist"),
-        filename: "bundle.js"
+        filename: "bundle.js",
+        globalObject: 'this'
     },
 
     devServer: {
@@ -20,6 +21,10 @@ module.exports = {
 
     module: {
         rules: [
+            {
+                test: /\.worker\.ts$/,
+                use: { loader: "worker-loader" }
+            },
             { 
                 test: /\.tsx?$/, 
                 loader: "awesome-typescript-loader" 

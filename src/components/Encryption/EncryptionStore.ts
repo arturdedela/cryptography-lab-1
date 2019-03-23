@@ -1,5 +1,5 @@
 import { provide } from "../../IoC";
-// import { EncryptionAlgorithm } from "./Encryption";
+// import { AlgorithmNames } from "./Encryption";
 // import { ShuffleEncryption } from "./algorithms/ShuffleEncryption";
 
 
@@ -7,10 +7,10 @@ import { provide } from "../../IoC";
 export class EncryptionStore {
     //
     // private encryptions = {
-    //     [EncryptionAlgorithm.ShuffleBits]: ShuffleEncryption,
-    //     [EncryptionAlgorithm.Vernam]: () => { throw new ReferenceError(); },
-    //     [EncryptionAlgorithm.DES]: () => { throw new ReferenceError(); },
-    //     [EncryptionAlgorithm.RC4]: () => { throw new ReferenceError(); },
+    //     [AlgorithmNames.ShuffleBits]: ShuffleEncryption,
+    //     [AlgorithmNames.Vernam]: () => { throw new ReferenceError(); },
+    //     [AlgorithmNames.DES]: () => { throw new ReferenceError(); },
+    //     [AlgorithmNames.RC4]: () => { throw new ReferenceError(); },
     // };
 
     

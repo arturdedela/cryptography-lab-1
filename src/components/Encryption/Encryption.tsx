@@ -8,16 +8,9 @@ import ChooseAlgorithm from "./ChooseAlgorithm/ChooseAlgorithm";
 import Encrypt from "./Encrypt/Encrypt";
 import SwitchView from "../SwitchView/SwitchView";
 import Download from "./Donwload/Download";
-import { IEncryptionAlgorithm } from "./algorithms/IEncryptionAlgorithm";
 import { RouteComponentProps } from "react-router";
 import { Button } from "semantic-ui-react";
-
-export enum EncryptionAlgorithm {
-    ShuffleBits,
-    Vernam,
-    DES,
-    RC4
-}
+import { AlgorithmNames } from "./algorithms";
 
 export enum EncryptionSteps {
     UploadFile,
@@ -33,9 +26,10 @@ class Encryption extends React.Component<RouteComponentProps<{ mode: Mode }>> {
     @observable private step: EncryptionSteps = EncryptionSteps.UploadFile;
     @observable private file: ArrayBuffer;
     @observable private fileName: string;
-    @observable private algorithm: IEncryptionAlgorithm;
+    @observable private algorithm: AlgorithmNames;
     @observable private encryptedFile: Blob;
-    @observable private key: string;
+    @observable private encryptionKey: string;
+    @observable private decryptionKey: string;
 
     public render() {
         const { mode } = this.props.match.params;
@@ -47,8 +41,8 @@ class Encryption extends React.Component<RouteComponentProps<{ mode: Mode }>> {
                 <SwitchView activeView={this.step}>
                     <FileUpload onChange={this.onFileUpload} />
                     <ChooseAlgorithm mode={mode} onChange={this.onChooseAlgorithm} />
-                    <Encrypt file={this.file} algorithm={this.algorithm} onEncrypted={this.onEncrypted} />
-                    <Download mode={mode} file={this.encryptedFile} fileName={this.fileName} decryptionKey={this.key} />
+                    <Encrypt file={this.file} algorithmName={this.algorithm} encryptionKey={this.encryptionKey} onEncrypted={this.onEncrypted} />
+                    <Download mode={mode} file={this.encryptedFile} fileName={this.fileName} decryptionKey={this.decryptionKey} />
                 </SwitchView>
 
                 {this.step === EncryptionSteps.DownloadFile &&
@@ -68,15 +62,16 @@ class Encryption extends React.Component<RouteComponentProps<{ mode: Mode }>> {
     }
 
     @bind
-    private onChooseAlgorithm(algorithm: IEncryptionAlgorithm) {
+    private onChooseAlgorithm(algorithm: AlgorithmNames, encryptionKey: string) {
         this.algorithm = algorithm;
+        this.encryptionKey = encryptionKey;
         this.step = EncryptionSteps.Encrypting;
     }
 
     @bind
-    private onEncrypted(file: ArrayBuffer, key: any) {
+    private onEncrypted(file: ArrayBuffer, decryptionKey: string) {
         this.encryptedFile = new Blob([new Uint8Array(file)]);
-        this.key = key;
+        this.decryptionKey = decryptionKey;
         this.step = EncryptionSteps.DownloadFile;
     }
 
@@ -87,7 +82,7 @@ class Encryption extends React.Component<RouteComponentProps<{ mode: Mode }>> {
         this.fileName = undefined!;
         this.algorithm = undefined!;
         this.encryptedFile = undefined!;
-        this.key = undefined!;
+        this.encryptionKey = undefined!;
     }
 }
 

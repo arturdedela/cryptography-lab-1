@@ -11,13 +11,22 @@ export class ShuffleEncryption implements IEncryptionAlgorithm {
         return [0, 1, 2, 3, 4, 5, 6, 7].sort(() => Math.random() - 0.5).toString();
     }
 
-    public setEncryptKey(key: string): boolean {
+    public isValidKey(key: string): boolean {
         const parsedKey = this.parseKey(key);
-        if (!this.isValidKey(parsedKey)) {
-            return false;
-        }
+        const values = new Set();
 
-        this.encryptTable = parsedKey;
+        return parsedKey.length === 8 && !parsedKey.some(i => {
+            if (values.has(i)) {
+                return true;
+            }
+            values.add(i);
+
+            return false;
+        });
+    }
+
+    public setEncryptKey(key: string): boolean {
+        this.encryptTable = this.parseKey(key);
         this.encryptTable.forEach((order, i) => this.decryptTable[order] = i);
         this.key = this.decryptTable.toString();
 
@@ -45,33 +54,24 @@ export class ShuffleEncryption implements IEncryptionAlgorithm {
             return reshuffled;
         };
 
+        let prevProgress = 0;
         for (let byteOffset = 0; byteOffset < view.byteLength; byteOffset++) {
             const reshuffledByte = reshuffle(view.getUint8(byteOffset));
             view.setUint8(byteOffset, reshuffledByte);
 
             if (this.onProgress) {
-                this.onProgress(byteOffset / view.byteLength * 100);
+                const curProgress = byteOffset / view.byteLength * 100;
+                if (curProgress - prevProgress >= 1) {
+                    this.onProgress(Math.round(curProgress));
+                    prevProgress = curProgress;
+                }
             }
         }
 
         return view.buffer;
     }
-
+    
     private parseKey(key: string): number[] {
         return key.split(",").map(i => parseInt(i, 10));
     }
-
-    private isValidKey(key: number[]): boolean {
-        const values = new Set();
-
-        return key.length === 8 && !key.some(i => {
-            if (values.has(i)) {
-                return true;
-            }
-            values.add(i);
-
-            return false;
-        });
-    }
-
 }

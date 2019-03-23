@@ -1,35 +1,26 @@
 import * as React from "react";
 import { Button, Dropdown, DropdownItemProps, DropdownProps, Input, InputOnChangeData } from "semantic-ui-react";
-import { EncryptionAlgorithm, Mode } from "../Encryption";
+import { Mode } from "../Encryption";
 import bind from "../../../decorators/bind";
 import { observable } from "mobx";
 import { observer } from "mobx-react";
-import { ShuffleEncryption } from "../algorithms/ShuffleEncryption";
-import { RC4 } from "../algorithms/RC4";
-import { IEncryptionAlgorithm } from "../algorithms/IEncryptionAlgorithm";
+import { AlgorithmNames, generateKey, validateKey } from "../algorithms";
 
 interface IProps {
-    onChange: (algorithm: IEncryptionAlgorithm) => void;
+    onChange: (algorithm: AlgorithmNames, encryptionKey: string) => void;
     mode: Mode;
 }
 
 @observer
 class ChooseAlgorithm extends React.Component<IProps> {
-    private algorithms: Record<EncryptionAlgorithm, IEncryptionAlgorithm> = {
-        [EncryptionAlgorithm.ShuffleBits]: new ShuffleEncryption,
-        [EncryptionAlgorithm.Vernam]: new ShuffleEncryption,
-        [EncryptionAlgorithm.DES]: new ShuffleEncryption,
-        [EncryptionAlgorithm.RC4]: new RC4,
-    };
-
     private options: DropdownItemProps[] = [
-        { text: "Shuffle bits", value: EncryptionAlgorithm.ShuffleBits },
-        { text: "Vernam", value: EncryptionAlgorithm.Vernam },
-        { text: "DES", value: EncryptionAlgorithm.DES },
-        { text: "RC4", value: EncryptionAlgorithm.RC4 },
+        { text: "Shuffle bits", value: AlgorithmNames.ShuffleBits },
+        { text: "Vernam", value: AlgorithmNames.Vernam },
+        { text: "DES", value: AlgorithmNames.DES },
+        { text: "RC4", value: AlgorithmNames.RC4 },
     ];
 
-    @observable private algorithm: EncryptionAlgorithm;
+    @observable private algorithm: AlgorithmNames;
     @observable private key: any = "";
     @observable private invalidKey: boolean = false;
 
@@ -64,7 +55,7 @@ class ChooseAlgorithm extends React.Component<IProps> {
 
     @bind
     private generateEncryptionKey() {
-        this.key = this.algorithms[this.algorithm].generateKey();
+        this.key = generateKey(this.algorithm);
     }
 
     @bind
@@ -74,7 +65,7 @@ class ChooseAlgorithm extends React.Component<IProps> {
 
     @bind
     private handleChange(e: React.SyntheticEvent, data: DropdownProps) {
-        this.algorithm = data.value as EncryptionAlgorithm;
+        this.algorithm = data.value as AlgorithmNames;
         if (this.props.mode === "encrypt") {
             this.generateEncryptionKey();
         }
@@ -82,14 +73,13 @@ class ChooseAlgorithm extends React.Component<IProps> {
 
     @bind
     private onSubmitClick()  {
-        const algorithm = this.algorithms[this.algorithm];
-        if (!algorithm.setEncryptKey(this.key)) {
+        if (!validateKey(this.algorithm, this.key)) {
             this.invalidKey = true;
 
             return;
         }
 
-        this.props.onChange(algorithm);
+        this.props.onChange(this.algorithm, this.key);
     }
 }
 

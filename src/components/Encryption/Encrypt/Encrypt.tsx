@@ -1,24 +1,39 @@
 import * as React from "react";
 import { observable } from "mobx";
 import { observer } from "mobx-react";
-import { IEncryptionAlgorithm } from "../algorithms/IEncryptionAlgorithm";
+import * as Worker from "./encrypt.worker";
+import { AlgorithmNames } from "../algorithms";
+import { IEncryptData, isFinishMessage, isProgressMessage } from "./types";
 
 interface IProps {
     file: ArrayBuffer;
-    algorithm: IEncryptionAlgorithm;
-    onEncrypted: (file: ArrayBuffer, key: any) => void;
+    algorithmName: AlgorithmNames;
+    encryptionKey: string;
+    onEncrypted: (file: ArrayBuffer, key: string) => void;
 }
 
 
 @observer
 class Encrypt extends React.Component<IProps> {
-    @observable private progress: number;
+    @observable private progress: number = 0;
 
     public componentDidMount() {
-        const { algorithm } = this.props;
-        algorithm.onProgress = p => this.progress = p;
-        const encrypted = algorithm.encrypt(this.props.file);
-        this.props.onEncrypted(encrypted, algorithm.key);
+        const { file, algorithmName, encryptionKey, onEncrypted } = this.props;
+
+        const encryptionWorker = new (Worker as any)() as Worker;
+        encryptionWorker.addEventListener("message", (e: any) => {
+            const { data } = e;
+            if (isFinishMessage(data)) {
+                onEncrypted(data.encryptedFile, data.decryptionKey);
+            }
+
+            if (isProgressMessage(data)) {
+                this.progress = data.progress;
+            }
+        });
+
+        const encryptMessage: IEncryptData = { action: "encrypt", file, algorithmName, encryptionKey };
+        encryptionWorker.postMessage(encryptMessage);
     }
 
     public render() {

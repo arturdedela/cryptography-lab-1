@@ -24,13 +24,13 @@ export class RC4 implements IEncryptionAlgorithm {
     }
 
     public setEncryptKey(key: string): boolean {
-        if (key.length < 8) {
-            return false;
-        }
-
         this.key = key;
 
         return true;
+    }
+
+    public isValidKey(key: string): boolean {
+        return key.length >= 8;
     }
 
 }
