@@ -18,7 +18,8 @@ class App extends React.Component {
 
                 <Container style={{ marginTop: "6em" }}>
                     <Route exact path="/" component={Home} />
-                    <Route path="/encrypt" component={Encryption} />
+                    <Route path="/:mode(encrypt)" component={Encryption} />
+                    <Route path="/:mode(decrypt)" component={Encryption} />
                 </Container>
             </>
         );

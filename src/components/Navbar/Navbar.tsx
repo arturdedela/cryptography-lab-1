@@ -13,6 +13,7 @@ class Navbar extends React.Component {
                     </Menu.Item>
                     <Menu.Item as={Link} to="/">Home</Menu.Item>
                     <Menu.Item as={Link} to="/encrypt">Encrypt</Menu.Item>
+                    <Menu.Item as={Link} to="/decrypt">Decrypt</Menu.Item>
                 </Container>
             </Menu>
         );
