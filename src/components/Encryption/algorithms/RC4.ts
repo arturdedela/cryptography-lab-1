@@ -9,10 +9,6 @@ export class RC4 implements IEncryptionAlgorithm {
     public onProgress: (ready: number, total: number) => void;
     public key: string;
 
-    public decrypt(data: ArrayBuffer): ArrayBuffer {
-        return new ArrayBuffer(5);
-    }
-
     public encrypt(data: ArrayBuffer): ArrayBuffer {
         const S = this.initBlock();
 

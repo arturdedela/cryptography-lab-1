@@ -4,8 +4,8 @@ export class ShuffleEncryption implements IEncryptionAlgorithm {
 
     public onProgress: (ready: number, total: number) => void;
     public key: string;
+
     private encryptTable: number[];
-    private decryptTable: number[] = [];
 
     public generateKey() {
         return [0, 1, 2, 3, 4, 5, 6, 7].sort(() => Math.random() - 0.5).toString();
@@ -26,26 +26,19 @@ export class ShuffleEncryption implements IEncryptionAlgorithm {
     }
 
     public setEncryptKey(key: string) {
+        const decryptTable: number[] = [];
         this.encryptTable = this.parseKey(key);
-        this.encryptTable.forEach((order, i) => this.decryptTable[order] = i);
-        this.key = this.decryptTable.toString();
+        this.encryptTable.forEach((order, i) => decryptTable[order] = i);
+        this.key = decryptTable.toString();
     }
 
     public encrypt(data: ArrayBuffer) {
-        return this.run(data, this.encryptTable);
-    }
-
-    public decrypt(data: ArrayBuffer) {
-        return this.run(data, this.decryptTable);
-    }
-
-    private run(data: ArrayBuffer, shuffleTable: number[]) {
         const view = new DataView(data);
 
         const reshuffle = (byte: number) => {
             let reshuffled = 0;
 
-            shuffleTable.forEach((order, i) => {
+            this.encryptTable.forEach((order, i) => {
                 reshuffled |= (byte >> order & 1) << i;
             });
 
