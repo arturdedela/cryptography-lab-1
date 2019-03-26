@@ -6,8 +6,8 @@ export class RC4 implements IEncryptionAlgorithm {
     private static readonly generatedKeyLength = 256;
     private static readonly sBlockSize = 256;
 
+    public onProgress: (ready: number, total: number) => void;
     public key: string;
-    public onProgress: (progress: number) => void;
 
     public decrypt(data: ArrayBuffer): ArrayBuffer {
         return new ArrayBuffer(5);
@@ -19,7 +19,6 @@ export class RC4 implements IEncryptionAlgorithm {
         const view = new DataView(data);
         let i = 0;
         let j = 0;
-        let prevProgress = 0;
 
         for (let byteOffset = 0; byteOffset < data.byteLength; ++byteOffset) {
             i = (i + 1) % RC4.sBlockSize;
@@ -29,11 +28,7 @@ export class RC4 implements IEncryptionAlgorithm {
             view.setUint8(byteOffset, view.getUint8(byteOffset) ^ pseudoRandomByte);
 
             if (this.onProgress) {
-                const curProgress = byteOffset / view.byteLength * 100;
-                if (curProgress - prevProgress >= 1) {
-                    this.onProgress(Math.round(curProgress));
-                    prevProgress = curProgress;
-                }
+                this.onProgress(byteOffset, view.byteLength);
             }
         }
 

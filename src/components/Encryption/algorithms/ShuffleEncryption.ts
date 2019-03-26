@@ -2,7 +2,7 @@ import { IEncryptionAlgorithm } from "./IEncryptionAlgorithm";
 
 export class ShuffleEncryption implements IEncryptionAlgorithm {
 
-    public onProgress: (progress: number) => void;
+    public onProgress: (ready: number, total: number) => void;
     public key: string;
     private encryptTable: number[];
     private decryptTable: number[] = [];
@@ -52,17 +52,12 @@ export class ShuffleEncryption implements IEncryptionAlgorithm {
             return reshuffled;
         };
 
-        let prevProgress = 0;
         for (let byteOffset = 0; byteOffset < view.byteLength; byteOffset++) {
             const reshuffledByte = reshuffle(view.getUint8(byteOffset));
             view.setUint8(byteOffset, reshuffledByte);
 
             if (this.onProgress) {
-                const curProgress = byteOffset / view.byteLength * 100;
-                if (curProgress - prevProgress >= 1) {
-                    this.onProgress(Math.round(curProgress));
-                    prevProgress = curProgress;
-                }
+                this.onProgress(byteOffset, view.byteLength);
             }
         }
 

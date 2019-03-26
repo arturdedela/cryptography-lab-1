@@ -1,5 +1,5 @@
 import { algorithms } from "../algorithms";
-import { isEncryptMessage } from "./types";
+import { IProgressData, isEncryptMessage } from "./types";
 
 const ctx: Worker = self as any;
 
@@ -10,7 +10,20 @@ ctx.addEventListener("message", (e) => {
         const algorithm = algorithms[algorithmName];
 
         algorithm.setEncryptKey(encryptionKey);
-        algorithm.onProgress = (progress: number) => ctx.postMessage({ action: "progress", progress });
+
+        let prevProgress = 0;
+        algorithm.onProgress = (ready: number, total: number) => {
+            const curProgress = ready / total * 100;
+
+            if (curProgress - prevProgress >= 1) {
+                const progressMessage: IProgressData = {
+                    action: "progress",
+                    progress: Math.round(curProgress)
+                };
+                ctx.postMessage(progressMessage);
+                prevProgress = curProgress;
+            }
+        };
 
         const encryptedFile = algorithm.encrypt(file);
 

@@ -1,7 +1,7 @@
 
 
 export interface IEncryptionAlgorithm {
-    onProgress: (progress: number) => void;
+    onProgress: (ready: number, total: number) => void;
     readonly key: string;
     generateKey(): string;
     isValidKey(key: string): boolean;
