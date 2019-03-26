@@ -29,7 +29,4 @@ export {
     generateKey,
     validateKey,
     AlgorithmNames,
-
-    ShuffleEncryption,
-    RC4
 };

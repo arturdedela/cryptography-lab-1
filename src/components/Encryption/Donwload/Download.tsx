@@ -24,7 +24,9 @@ class Download extends React.Component<IProps> {
             <>
                 <Message success>
                     <Message.Header>File successfully {mode}ed</Message.Header>
-                    {mode === "encrypt" && <p>Your decryption key: <b>{this.props.decryptionKey}</b></p>}
+                    {mode === "encrypt" &&
+                    <p style={{ wordBreak: "break-word"}}>Your decryption key: <b>{this.props.decryptionKey}</b></p>
+                    }
                 </Message>
                 {mode === "encrypt" &&
                 <Message warning>
