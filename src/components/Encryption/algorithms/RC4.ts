@@ -23,10 +23,8 @@ export class RC4 implements IEncryptionAlgorithm {
         return key.substring(0, this.keyLength);
     }
 
-    public setEncryptKey(key: string): boolean {
+    public setEncryptKey(key: string) {
         this.key = key;
-
-        return true;
     }
 
     public isValidKey(key: string): boolean {

@@ -25,12 +25,10 @@ export class ShuffleEncryption implements IEncryptionAlgorithm {
         });
     }
 
-    public setEncryptKey(key: string): boolean {
+    public setEncryptKey(key: string) {
         this.encryptTable = this.parseKey(key);
         this.encryptTable.forEach((order, i) => this.decryptTable[order] = i);
         this.key = this.decryptTable.toString();
-
-        return true;
     }
 
     public encrypt(data: ArrayBuffer) {
