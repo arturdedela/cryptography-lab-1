@@ -1,6 +1,7 @@
 import { ShuffleEncryption } from "./ShuffleEncryption";
 import { RC4 } from "./RC4";
 import { IEncryptionAlgorithm } from "./IEncryptionAlgorithm";
+import { Vernam } from "./Vernam";
 
 enum AlgorithmNames {
     ShuffleBits,
@@ -11,7 +12,7 @@ enum AlgorithmNames {
 
 const algorithms: Record<AlgorithmNames, IEncryptionAlgorithm> = {
     [AlgorithmNames.ShuffleBits]: new ShuffleEncryption,
-    [AlgorithmNames.Vernam]: new ShuffleEncryption,
+    [AlgorithmNames.Vernam]: new Vernam,
     [AlgorithmNames.DES]: new ShuffleEncryption,
     [AlgorithmNames.RC4]: new RC4,
 };
