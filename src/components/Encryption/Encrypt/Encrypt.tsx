@@ -5,6 +5,7 @@ import * as Worker from "./encrypt.worker";
 import { AlgorithmNames } from "../algorithms";
 import { IEncryptData, isFinishMessage, isProgressMessage } from "./types";
 import { Progress } from "semantic-ui-react";
+import bind from "../../../decorators/bind";
 
 interface IProps {
     file: ArrayBuffer;
@@ -16,25 +17,24 @@ interface IProps {
 
 @observer
 class Encrypt extends React.Component<IProps> {
+    private static Worker: Worker;
     @observable private progress: number = 0;
 
     public componentDidMount() {
-        const { file, algorithmName, encryptionKey, onEncrypted } = this.props;
+        const { file, algorithmName, encryptionKey } = this.props;
 
-        const encryptionWorker = new (Worker as any)() as Worker;
-        encryptionWorker.addEventListener("message", (e: any) => {
-            const { data } = e;
-            if (isFinishMessage(data)) {
-                onEncrypted(data.encryptedFile, data.decryptionKey);
-            }
+        if (!Encrypt.Worker) {
+            Encrypt.Worker = new (Worker as any)();
+        }
 
-            if (isProgressMessage(data)) {
-                this.progress = data.progress;
-            }
-        });
+        Encrypt.Worker.addEventListener("message", this.workerMessageHandler);
 
         const encryptMessage: IEncryptData = { action: "encrypt", file, algorithmName, encryptionKey };
-        encryptionWorker.postMessage(encryptMessage);
+        Encrypt.Worker.postMessage(encryptMessage);
+    }
+
+    public componentWillUnmount() {
+        Encrypt.Worker.removeEventListener("message", this.workerMessageHandler);
     }
 
     public render() {
@@ -44,6 +44,17 @@ class Encrypt extends React.Component<IProps> {
                 Encrypting...
             </Progress>
         );
+    }
+
+    @bind
+    private workerMessageHandler(e: any) {
+        const { data } = e;
+        if (isFinishMessage(data)) {
+            this.props.onEncrypted(data.encryptedFile, data.decryptionKey);
+        }
+        else if (isProgressMessage(data)) {
+            this.progress = data.progress;
+        }
     }
 }
 
