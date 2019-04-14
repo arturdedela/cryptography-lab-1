@@ -4,10 +4,10 @@ import { IEncryptionAlgorithm } from "./IEncryptionAlgorithm";
 import { Vernam } from "./Vernam";
 
 enum AlgorithmNames {
-    ShuffleBits,
-    Vernam,
-    DES,
-    RC4
+    ShuffleBits = "shuffle",
+    Vernam = "vernam",
+    DES = "des",
+    RC4 = "rc4"
 }
 
 const algorithms: Record<AlgorithmNames, IEncryptionAlgorithm> = {

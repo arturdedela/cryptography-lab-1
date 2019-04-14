@@ -18,6 +18,7 @@ export interface IProgressData extends IEventData{
 export interface IFinishData extends IEventData {
     encryptedFile: ArrayBuffer;
     decryptionKey: string;
+    encryptTime: number;
 }
 
 export function isEncryptMessage(data: IEventData): data is IEncryptData {
@@ -31,3 +32,6 @@ export function isProgressMessage(data: IEventData): data is IProgressData {
 export function isFinishMessage(data: IEventData): data is IFinishData {
     return data.action === "finish";
 }
+
+
+export type EncryptTimings = Array<{ size: number, time: number }>;

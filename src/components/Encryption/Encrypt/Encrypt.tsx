@@ -3,7 +3,7 @@ import { observable } from "mobx";
 import { observer } from "mobx-react";
 import * as Worker from "./encrypt.worker";
 import { AlgorithmNames } from "../algorithms";
-import { IEncryptData, isFinishMessage, isProgressMessage } from "./types";
+import { EncryptTimings, IEncryptData, isFinishMessage, isProgressMessage } from "./types";
 import { Progress } from "semantic-ui-react";
 import bind from "../../../decorators/bind";
 
@@ -13,7 +13,6 @@ interface IProps {
     encryptionKey: string;
     onEncrypted: (file: ArrayBuffer, key: string) => void;
 }
-
 
 @observer
 class Encrypt extends React.Component<IProps> {
@@ -51,10 +50,19 @@ class Encrypt extends React.Component<IProps> {
         const { data } = e;
         if (isFinishMessage(data)) {
             this.props.onEncrypted(data.encryptedFile, data.decryptionKey);
+            this.saveEncryptTime(data.encryptTime);
         }
         else if (isProgressMessage(data)) {
             this.progress = data.progress;
         }
+    }
+
+    private saveEncryptTime(time: number) {
+        const key = `${this.props.algorithmName}_timings`;
+        const s = localStorage.getItem(key);
+        const timings: EncryptTimings = s ? JSON.parse(s) : [];
+        timings.push({ size: this.props.file.byteLength, time });
+        localStorage.setItem(key, JSON.stringify(timings));
     }
 }
 

@@ -10,6 +10,7 @@
   "author": "arturdedela",
   "license": "ISC",
   "dependencies": {
+    "chart.js": "^2.8.0",
     "file-saver": "^2.0.1",
     "inversify": "latest",
     "inversify-binding-decorators": "latest",
@@ -23,6 +24,7 @@
     "semantic-ui-react": "^0.85.0"
   },
   "devDependencies": {
+    "@types/chart.js": "^2.7.51",
     "@types/file-saver": "^2.0.0",
     "@types/history": "^4.7.2",
     "@types/jest": "^24.0.11",

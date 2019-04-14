@@ -1,5 +1,5 @@
 import { algorithms } from "../algorithms";
-import { IProgressData, isEncryptMessage } from "./types";
+import { IFinishData, IProgressData, isEncryptMessage } from "./types";
 
 const ctx: Worker = self as any;
 
@@ -25,9 +25,17 @@ ctx.addEventListener("message", (e) => {
             }
         };
 
+        let encryptTime = performance.now();
         const encryptedFile = algorithm.encrypt(file);
+        encryptTime = performance.now() - encryptTime;
 
-        ctx.postMessage({ action: "finish", encryptedFile, decryptionKey: algorithm.key });
+        const finishMessage: IFinishData = {
+            action: "finish",
+            encryptedFile,
+            decryptionKey: algorithm.key,
+            encryptTime
+        };
+        ctx.postMessage(finishMessage);
     }
 });
 
