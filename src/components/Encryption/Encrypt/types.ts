@@ -1,4 +1,5 @@
 import { AlgorithmNames } from "../algorithms";
+import { Mode } from "../Encryption";
 
 
 export interface IEventData {
@@ -7,6 +8,7 @@ export interface IEventData {
 
 export interface IEncryptData extends IEventData {
     file: ArrayBuffer;
+    mode: Mode;
     algorithmName: AlgorithmNames;
     encryptionKey: string;
 }

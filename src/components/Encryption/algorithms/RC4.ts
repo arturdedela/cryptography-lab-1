@@ -31,6 +31,10 @@ export class RC4 implements IEncryptionAlgorithm {
         return view.buffer;
     }
 
+    public decrypt(data: ArrayBuffer): ArrayBuffer {
+        return this.encrypt(data);
+    }
+
     public generateKey(): any {
         let key = "";
         while (key.length < RC4.generatedKeyLength) {

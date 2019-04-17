@@ -21,6 +21,10 @@ export class Vernam implements IEncryptionAlgorithm {
         return view.buffer;
     }
 
+    public decrypt(data: ArrayBuffer): ArrayBuffer {
+        return this.encrypt(data);
+    }
+
     public generateKey(): string {
         let key = "";
         while (key.length < 32) {

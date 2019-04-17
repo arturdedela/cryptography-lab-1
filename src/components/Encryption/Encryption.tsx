@@ -41,7 +41,13 @@ class Encryption extends React.Component<RouteComponentProps<{ mode: Mode }>> {
                 <SwitchView activeView={this.step}>
                     <FileUpload onChange={this.onFileUpload} />
                     <ChooseAlgorithm mode={mode} onChange={this.onChooseAlgorithm} />
-                    <Encrypt file={this.file} algorithmName={this.algorithm} encryptionKey={this.encryptionKey} onEncrypted={this.onEncrypted} />
+                    <Encrypt
+                        mode={mode}
+                        file={this.file}
+                        algorithmName={this.algorithm}
+                        encryptionKey={this.encryptionKey}
+                        onEncrypted={this.onEncrypted}
+                    />
                     <Download mode={mode} file={this.encryptedFile} fileName={this.fileName} decryptionKey={this.decryptionKey} />
                 </SwitchView>
 

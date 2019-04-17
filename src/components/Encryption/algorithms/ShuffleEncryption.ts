@@ -56,6 +56,10 @@ export class ShuffleEncryption implements IEncryptionAlgorithm {
 
         return view.buffer;
     }
+
+    public decrypt(data: ArrayBuffer): ArrayBuffer {
+        return this.encrypt(data);
+    }
     
     private parseKey(key: string): number[] {
         return key.split(",").map(i => parseInt(i, 10));

@@ -7,4 +7,5 @@ export interface IEncryptionAlgorithm {
     isValidKey(key: string): boolean;
     setEncryptKey(key: string): void;
     encrypt(data: ArrayBuffer): ArrayBuffer;
+    decrypt(data: ArrayBuffer): ArrayBuffer;
 }

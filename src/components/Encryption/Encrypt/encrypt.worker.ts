@@ -6,7 +6,7 @@ const ctx: Worker = self as any;
 ctx.addEventListener("message", (e) => {
 
     if (isEncryptMessage(e.data)) {
-        const { file, algorithmName, encryptionKey } = e.data;
+        const { file, algorithmName, encryptionKey, mode } = e.data;
         const algorithm = algorithms[algorithmName];
 
         algorithm.setEncryptKey(encryptionKey);
@@ -26,7 +26,7 @@ ctx.addEventListener("message", (e) => {
         };
 
         let encryptTime = performance.now();
-        const encryptedFile = algorithm.encrypt(file);
+        const encryptedFile = algorithm[mode](file);
         encryptTime = performance.now() - encryptTime;
 
         const finishMessage: IFinishData = {

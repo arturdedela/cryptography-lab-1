@@ -6,9 +6,11 @@ import { AlgorithmNames } from "../algorithms";
 import { EncryptTimings, IEncryptData, isFinishMessage, isProgressMessage } from "./types";
 import { Progress } from "semantic-ui-react";
 import bind from "../../../decorators/bind";
+import { Mode } from "../Encryption";
 
 interface IProps {
     file: ArrayBuffer;
+    mode: Mode;
     algorithmName: AlgorithmNames;
     encryptionKey: string;
     onEncrypted: (file: ArrayBuffer, key: string) => void;
@@ -20,7 +22,7 @@ class Encrypt extends React.Component<IProps> {
     @observable private progress: number = 0;
 
     public componentDidMount() {
-        const { file, algorithmName, encryptionKey } = this.props;
+        const { file, algorithmName, encryptionKey, mode } = this.props;
 
         if (!Encrypt.Worker) {
             Encrypt.Worker = new (Worker as any)();
@@ -28,7 +30,7 @@ class Encrypt extends React.Component<IProps> {
 
         Encrypt.Worker.addEventListener("message", this.workerMessageHandler);
 
-        const encryptMessage: IEncryptData = { action: "encrypt", file, algorithmName, encryptionKey };
+        const encryptMessage: IEncryptData = { action: "encrypt", mode, file, algorithmName, encryptionKey };
         Encrypt.Worker.postMessage(encryptMessage);
     }
 
