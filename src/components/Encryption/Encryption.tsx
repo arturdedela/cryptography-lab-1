@@ -30,6 +30,7 @@ class Encryption extends React.Component<RouteComponentProps<{ mode: Mode }>> {
     @observable private encryptedFile: Blob;
     @observable private encryptionKey: string;
     @observable private decryptionKey: string;
+    private algorithmOptions: any;
 
     public render() {
         const { mode } = this.props.match.params;
@@ -46,6 +47,7 @@ class Encryption extends React.Component<RouteComponentProps<{ mode: Mode }>> {
                         file={this.file}
                         algorithmName={this.algorithm}
                         encryptionKey={this.encryptionKey}
+                        options={this.algorithmOptions}
                         onEncrypted={this.onEncrypted}
                     />
                     <Download mode={mode} file={this.encryptedFile} fileName={this.fileName} decryptionKey={this.decryptionKey} />
@@ -68,9 +70,10 @@ class Encryption extends React.Component<RouteComponentProps<{ mode: Mode }>> {
     }
 
     @bind
-    private onChooseAlgorithm(algorithm: AlgorithmNames, encryptionKey: string) {
+    private onChooseAlgorithm(algorithm: AlgorithmNames, encryptionKey: string, options: any) {
         this.algorithm = algorithm;
         this.encryptionKey = encryptionKey;
+        this.algorithmOptions = options;
         this.step = EncryptionSteps.Encrypting;
     }
 

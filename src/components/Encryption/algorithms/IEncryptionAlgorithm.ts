@@ -6,6 +6,6 @@ export interface IEncryptionAlgorithm {
     generateKey(): string;
     isValidKey(key: string): boolean;
     setEncryptKey(key: string): void;
-    encrypt(data: ArrayBuffer): ArrayBuffer;
-    decrypt(data: ArrayBuffer): ArrayBuffer;
+    encrypt(data: ArrayBuffer, options: any): ArrayBuffer;
+    decrypt(data: ArrayBuffer, options: any): ArrayBuffer;
 }

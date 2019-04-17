@@ -5,9 +5,10 @@ import bind from "../../../decorators/bind";
 import { observable } from "mobx";
 import { observer } from "mobx-react";
 import { AlgorithmNames, generateKey, validateKey } from "../algorithms";
+import ChooseDesMode from "./ChooseDesMode";
 
 interface IProps {
-    onChange: (algorithm: AlgorithmNames, encryptionKey: string) => void;
+    onChange: (algorithm: AlgorithmNames, encryptionKey: string, options: any) => void;
     mode: Mode;
 }
 
@@ -24,6 +25,8 @@ class ChooseAlgorithm extends React.Component<IProps> {
     @observable private key: any = "";
     @observable private invalidKey: boolean = false;
 
+    private algorithmOptions: any = {};
+
     public render() {
         const { mode } = this.props;
 
@@ -37,6 +40,11 @@ class ChooseAlgorithm extends React.Component<IProps> {
                         options={this.options}
                         onChange={this.handleChange}
                     />
+
+                    {this.algorithm === AlgorithmNames.DES &&
+                    <ChooseDesMode onChange={this.createOptionsChangeHandler("desMode")} />
+                    }
+
                     <Input
                         label="Key:"
                         value={this.key.toString()}
@@ -45,22 +53,29 @@ class ChooseAlgorithm extends React.Component<IProps> {
                         error={this.invalidKey}
                     />
                     {mode === "encrypt" &&
-                    <Button icon="sync" size="small" attached="right" onClick={this.generateEncryptionKey}/>
+                    <Button icon="sync" size="small" attached="right" onClick={this.generateEncryptionKey} />
                     }
+
                 </div>
                 <Button primary onClick={this.onSubmitClick} disabled={this.algorithm === undefined}>Submit</Button>
             </>
         );
     }
 
+    private createOptionsChangeHandler(optionName: string) {
+        return (value: any) => this.algorithmOptions[optionName] = value;
+    }
+
     @bind
     private generateEncryptionKey() {
         this.key = generateKey(this.algorithm);
+        this.invalidKey = false;
     }
 
     @bind
     private onKeyChange(e: React.ChangeEvent, data: InputOnChangeData) {
         this.key = data.value;
+        this.invalidKey = false;
     }
 
     @bind
@@ -79,7 +94,7 @@ class ChooseAlgorithm extends React.Component<IProps> {
             return;
         }
 
-        this.props.onChange(this.algorithm, this.key);
+        this.props.onChange(this.algorithm, this.key, this.algorithmOptions);
     }
 }
 

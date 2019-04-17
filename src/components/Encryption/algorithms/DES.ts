@@ -1,5 +1,16 @@
 import { IEncryptionAlgorithm } from "./IEncryptionAlgorithm";
 
+export enum DesMode {
+    ECB,
+    CBC,
+    CFB,
+    OFB
+}
+
+interface IDesOptions {
+    desMode: DesMode;
+}
+
 export class DES implements IEncryptionAlgorithm {
     public key: string;
     public onProgress: (ready: number, total: number) => void;
@@ -7,12 +18,12 @@ export class DES implements IEncryptionAlgorithm {
     private readonly blockSizeBytes = 8; // 64 bit / 8 bit = 8 bytes
     private readonly generatedKeyLength = 24;
 
-    public encrypt(data: ArrayBuffer): ArrayBuffer {
-        return this.des(this.key, data, true);
+    public encrypt(data: ArrayBuffer, options: IDesOptions): ArrayBuffer {
+        return this.des(this.key, data, true, options.desMode);
     }
 
-    public decrypt(data: ArrayBuffer): ArrayBuffer {
-        return this.des(this.key, data, false);
+    public decrypt(data: ArrayBuffer, options: IDesOptions): ArrayBuffer {
+        return this.des(this.key, data, false, options.desMode);
     }
 
     public generateKey(): string {
@@ -40,7 +51,7 @@ export class DES implements IEncryptionAlgorithm {
         return newBuf;
     }
 
-    private des(key: string, message: ArrayBuffer, encrypt: boolean, mode = 0, iv?: string) {
+    private des(key: string, message: ArrayBuffer, encrypt: boolean, mode: DesMode) {
         // declaring this locally speeds things up a bit
         const spfunction1 = [0x1010400, 0, 0x10000, 0x1010404, 0x1010004, 0x10404, 0x4, 0x10000, 0x400, 0x1010400, 0x1010404, 0x400, 0x1000404, 0x1010004, 0x1000000, 0x4, 0x404, 0x1000400, 0x1000400, 0x10400, 0x10400, 0x1010000, 0x1010000, 0x1000404, 0x10004, 0x1000004, 0x1000004, 0x10004, 0, 0x404, 0x10404, 0x1000000, 0x10000, 0x1010404, 0x4, 0x1010000, 0x1010400, 0x1000000, 0x1000000, 0x400, 0x1010004, 0x10000, 0x10400, 0x1000004, 0x400, 0x4, 0x1000404, 0x10404, 0x1010404, 0x10004, 0x1010000, 0x1000404, 0x1000004, 0x404, 0x10404, 0x1010400, 0x404, 0x1000400, 0x1000400, 0, 0x10004, 0x10400, 0, 0x1010004];
         const spfunction2 = [-0x7fef7fe0, -0x7fff8000, 0x8000, 0x108020, 0x100000, 0x20, -0x7fefffe0, -0x7fff7fe0, -0x7fffffe0, -0x7fef7fe0, -0x7fef8000, -0x80000000, -0x7fff8000, 0x100000, 0x20, -0x7fefffe0, 0x108000, 0x100020, -0x7fff7fe0, 0, -0x80000000, 0x8000, 0x108020, -0x7ff00000, 0x100020, -0x7fffffe0, 0, 0x108000, 0x8020, -0x7fef8000, -0x7ff00000, 0x8020, 0, 0x108020, -0x7fefffe0, 0x100000, -0x7fff7fe0, -0x7ff00000, -0x7fef8000, 0x8000, -0x7ff00000, -0x7fff8000, 0x20, -0x7fef7fe0, 0x108020, 0x20, 0x8000, -0x80000000, 0x8020, -0x7fef8000, 0x100000, -0x7fffffe0, 0x100020, -0x7fff7fe0, -0x7fffffe0, 0x100020, 0x108000, 0, -0x7fff8000, 0x8020, -0x80000000, -0x7fefffe0, -0x7fef7fe0, 0x108000];
@@ -77,11 +88,12 @@ export class DES implements IEncryptionAlgorithm {
         }
 
         // TODO: DES modes
-        // if (mode === 1) { // CBC mode
-        //     cbcleft = (iv.charCodeAt(m++) << 24) | (iv.charCodeAt(m++) << 16) | (iv.charCodeAt(m++) << 8) | iv.charCodeAt(m++);
-        //     cbcright = (iv.charCodeAt(m++) << 24) | (iv.charCodeAt(m++) << 16) | (iv.charCodeAt(m++) << 8) | iv.charCodeAt(m++);
-        //     m = 0;
-        // }
+        if (mode === DesMode.CBC) { // CBC mode
+            const iv = "kf3kmn2q";
+            cbcleft = (iv.charCodeAt(m++) << 24) | (iv.charCodeAt(m++) << 16) | (iv.charCodeAt(m++) << 8) | iv.charCodeAt(m++);
+            cbcright = (iv.charCodeAt(m++) << 24) | (iv.charCodeAt(m++) << 16) | (iv.charCodeAt(m++) << 8) | iv.charCodeAt(m++);
+            m = 0;
+        }
 
         // loop through each 64 bit chunk of the message
         while (m < uint32Array.length) {
@@ -89,7 +101,7 @@ export class DES implements IEncryptionAlgorithm {
             right = uint32Array[m++];
 
             // for Cipher Block Chaining mode, xor the message with the previous result
-            if (mode === 1) {
+            if (mode === DesMode.CBC) {
                 if (encrypt) {
                     left ^= cbcleft!;
                     right ^= cbcright!;
@@ -142,7 +154,7 @@ export class DES implements IEncryptionAlgorithm {
             temp = ((left >>> 4) ^ right) & 0x0f0f0f0f; right ^= temp; left ^= (temp << 4);
 
             // for Cipher Block Chaining mode, xor the message with the previous result
-            if (mode === 1) {
+            if (mode === DesMode.CBC) {
                 if (encrypt) {
                     cbcleft = left;
                     cbcright = right;

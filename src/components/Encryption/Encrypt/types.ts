@@ -11,6 +11,7 @@ export interface IEncryptData extends IEventData {
     mode: Mode;
     algorithmName: AlgorithmNames;
     encryptionKey: string;
+    options: any;
 }
 
 export interface IProgressData extends IEventData{

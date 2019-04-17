@@ -14,6 +14,7 @@ interface IProps {
     algorithmName: AlgorithmNames;
     encryptionKey: string;
     onEncrypted: (file: ArrayBuffer, key: string) => void;
+    options: any;
 }
 
 @observer
@@ -22,7 +23,7 @@ class Encrypt extends React.Component<IProps> {
     @observable private progress: number = 0;
 
     public componentDidMount() {
-        const { file, algorithmName, encryptionKey, mode } = this.props;
+        const { file, algorithmName, encryptionKey, mode, options } = this.props;
 
         if (!Encrypt.Worker) {
             Encrypt.Worker = new (Worker as any)();
@@ -30,7 +31,7 @@ class Encrypt extends React.Component<IProps> {
 
         Encrypt.Worker.addEventListener("message", this.workerMessageHandler);
 
-        const encryptMessage: IEncryptData = { action: "encrypt", mode, file, algorithmName, encryptionKey };
+        const encryptMessage: IEncryptData = { action: "encrypt", mode, file, algorithmName, encryptionKey, options };
         Encrypt.Worker.postMessage(encryptMessage);
     }
 
