@@ -40,10 +40,11 @@ class Encrypt extends React.Component<IProps> {
     }
 
     public render() {
+        const { mode } = this.props;
 
         return (
             <Progress progress="percent" percent={this.progress} color="violet">
-                Encrypting...
+                {mode[0].toUpperCase() + mode.slice(1)}ing...
             </Progress>
         );
     }
