@@ -33,6 +33,10 @@ class ChooseAlgorithm extends React.Component<IProps> {
         return (
             <>
                 <div className="mb-3">
+                    {mode === "encrypt" && this.algorithm === AlgorithmNames.DES &&
+                    <p>Use an 8-character key to encrypt with regular DES, and 24-character key to encrypt with triple DES.</p>
+                    }
+
                     <Dropdown
                         className="mr-2"
                         placeholder="Choose algorithm"
@@ -57,7 +61,7 @@ class ChooseAlgorithm extends React.Component<IProps> {
                     }
 
                 </div>
-                <Button primary onClick={this.onSubmitClick} disabled={this.algorithm === undefined}>Submit</Button>
+                <Button primary onClick={this.onSubmitClick} disabled={this.algorithm === undefined}>Next</Button>
             </>
         );
     }
