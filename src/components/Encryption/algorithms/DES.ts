@@ -11,6 +11,8 @@ interface IDesOptions {
     desMode: DesMode;
 }
 
+type DesModeFunc = (block: bigint, encrypt: boolean) => bigint;
+
 export class DES implements IEncryptionAlgorithm {
     public key: string;
     public onProgress: (ready: number, total: number) => void;
@@ -30,6 +32,15 @@ export class DES implements IEncryptionAlgorithm {
     private keys: number[];
     private iterations: number;
     private looping: number[];
+    private readonly iv = BigInt(0xEB2B1E8F);
+    private prevBlock: bigint;
+
+    private modes: DesModeFunc[] = [
+        this.ecb.bind(this),
+        this.cbc.bind(this),
+        this.cfb.bind(this),
+        this.ofb.bind(this)
+    ];
 
     public encrypt(data: ArrayBuffer, options: IDesOptions): ArrayBuffer {
         return this.des(this.key, data, true, options.desMode);
@@ -64,7 +75,7 @@ export class DES implements IEncryptionAlgorithm {
         return newBuf;
     }
 
-    private des(key: string, message: ArrayBuffer, encrypt: boolean, mode: DesMode) {
+    private des(key: string, message: ArrayBuffer, encrypt: boolean, mode: DesMode = DesMode.ECB) {
         // create the 16 or 48 subkeys we will need
         this.keys = this.createKeys(key);
 
@@ -77,13 +88,16 @@ export class DES implements IEncryptionAlgorithm {
         }
 
         const plainText = this.padBuffer(message);
+        const plainView = new DataView(plainText);
         const cipherText = new ArrayBuffer(plainText.byteLength);
-        const v = new DataView(cipherText);
+        const cipherView = new DataView(cipherText);
+        this.prevBlock = this.iv;
 
-        // TODO: DES modes
         for (let i = 0; i < plainText.byteLength; i += this.blockSizeBytes) {
-            const encodedBlock = this.encodeBlock(plainText.slice(i, i + this.blockSizeBytes));
-            v.setBigUint64(i, encodedBlock);
+            const plainBlock = plainView.getBigUint64(i);
+            const encodedBlock = this.modes[mode](plainBlock, encrypt);
+
+            cipherView.setBigUint64(i, encodedBlock);
 
             if (this.onProgress) {
                 this.onProgress(i, plainText.byteLength);
@@ -93,8 +107,47 @@ export class DES implements IEncryptionAlgorithm {
         return cipherText;
     }
 
-    private encodeBlock(block: ArrayBuffer) {
-        const v = new DataView(block);
+    private ecb(block: bigint, encrypt: boolean) {
+        return this.encodeBlock(block);
+    }
+
+    private cbc(block: bigint, encrypt: boolean) {
+        if (encrypt) {
+            return this.prevBlock = this.encodeBlock(block ^ this.prevBlock);
+        }
+
+        const decrypted = this.encodeBlock(block) ^ this.prevBlock;
+        this.prevBlock = block;
+
+        return decrypted;
+    }
+
+
+    private cfb(block: bigint, encrypt: boolean) {
+        if (encrypt) {
+            return this.prevBlock = this.encodeBlock(block ^ this.prevBlock);
+        }
+
+        const decrypted = this.encodeBlock(block) ^ this.prevBlock;
+        this.prevBlock = block;
+
+        return decrypted;
+    }
+
+    private ofb(block: bigint, encrypt: boolean) {
+        if (encrypt) {
+            return this.prevBlock = this.encodeBlock(block ^ this.prevBlock);
+        }
+
+        const decrypted = this.encodeBlock(block) ^ this.prevBlock;
+        this.prevBlock = block;
+
+        return decrypted;
+    }
+
+    private encodeBlock(block: bigint): bigint {
+        const v = new DataView(new ArrayBuffer(this.blockSizeBytes));
+        v.setBigUint64(0, block);
         let left = v.getUint32(0);
         let right = v.getUint32(4);
 
