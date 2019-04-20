@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "webpack-dev-server --mode development --open --hot",
+    "start": "node server.js",
+    "dev": "webpack-dev-server --mode development --open --hot",
+    "build": "webpack -p",
     "test": "jest"
   },
   "author": "arturdedela",
