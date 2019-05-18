@@ -9,6 +9,7 @@ import Encryption from "./components/Encryption/Encryption";
 import Footer from "./components/Footer/Footer";
 import About from "./components/About/About";
 import Chart from "./components/Chart/Chart";
+import Lab2 from "./components/Lab2/Lab2";
 
 
 @observer
@@ -25,6 +26,8 @@ class App extends React.Component {
                     <Route path="/:mode(encrypt)" component={Encryption} />
                     <Route path="/:mode(decrypt)" component={Encryption} />
                     <Route path="/stats" component={Chart} />
+
+                    <Route path="/lab2_1" component={Lab2} />
                 </Container>
 
                 <Footer/>
