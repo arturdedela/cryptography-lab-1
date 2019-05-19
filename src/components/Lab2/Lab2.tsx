@@ -3,21 +3,24 @@ import "./style.scss";
 import * as Worker from "./lab2.worker";
 import { Button, Form, InputOnChangeData, Progress } from "semantic-ui-react";
 import { useEffect, useState } from "react";
-import { IGetPrimesMessage, isPrimesMessage } from "./types";
+import { IGetPrimesMessage, isFinishMessage, isProgressMessage } from "./types";
 
 
 export default function Lab2() {
     const [worker] = useState<Worker>(new (Worker as any)());
     const [m, setM] = useState<number>(0);
-    const [primes, setPrimes] = useState<number[]>([]);
+    const [result, setResult] = useState<number[]>([]);
     const [progress, setProgress] = useState<number>(0);
 
     useEffect(() => {
         function handleWorkerMessage(e: MessageEvent) {
             const { data } = e;
-            if (isPrimesMessage(data)) {
-                setPrimes(data.primes);
+
+            if (isProgressMessage(data)) {
                 setProgress(data.progress);
+            }
+            else if (isFinishMessage(data)) {
+                setResult(data.result);
             }
         }
 
@@ -27,7 +30,7 @@ export default function Lab2() {
     }, []);
 
     function getPrimes() {
-        setPrimes([]);
+        setResult([]);
         const message: IGetPrimesMessage = { action: "get_primes", m };
         worker.postMessage(message);
     }
@@ -37,44 +40,17 @@ export default function Lab2() {
     }
 
     return (
-        <Form onSubmit={getPrimes}>
+        <Form>
             <Form.Input
                 type="number"
                 label="Enter m:"
                 onChange={handleChange}
             />
-            <Button>Get primes</Button>
-            <Progress progress="percent" percent={progress.toFixed(2)} color="violet" />
-            <p className="primes-container">
-                {primes.toString()}
+            <Button type="button" onClick={getPrimes}>Get primes</Button>
+            {!!progress && <Progress progress="percent" percent={progress.toFixed(2)} color="violet" />}
+            <p className="result-container">
+                {result.toString()}
             </p>
         </Form>
     );
 }
-
-// class Lab2 extends React.Component {
-//
-//     componentDidMount() {
-//
-//     }
-//
-//     public render() {
-//         return (
-//             <Form>
-//                 <Form.Input
-//                     type="number"
-//                     label="Enter m:"
-//                     onChange={this.handleChange}
-//                 />
-//             </Form>
-//         );
-//     }
-//
-//     @bind
-//     private handleChange(e: React.ChangeEvent, data: InputOnChangeData) {
-//         const simple = Helper.getPrimes(parseInt(data.value, 10));
-//         console.log(simple);
-//     }
-// }
-//
-// export default Lab2;

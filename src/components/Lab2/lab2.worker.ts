@@ -1,4 +1,4 @@
-import { IPrimesMessage, isGetPrimesMessage } from "./types";
+import { IFinishMessage, IProgressMessage, isGetPrimesMessage } from "./types";
 import { getPrimes } from "./helpers/getPrimes";
 
 const ctx: Worker = self as any;
@@ -15,10 +15,13 @@ ctx.addEventListener("message", (e) => {
             const to = Math.min(m, from + interval);
             const newPrimes = getPrimes(from, to);
             primes.push(...newPrimes);
-            const message: IPrimesMessage = { action: "primes", primes, progress: (to / m) * 100 };
 
-            ctx.postMessage(message);
+            const progressMessage: IProgressMessage = { action: "progress", progress: (to / m) * 100 };
+            ctx.postMessage(progressMessage);
         }
+
+        const message: IFinishMessage = { action: "finish", result: primes };
+        ctx.postMessage(message);
     }
 
 });
