@@ -5,6 +5,7 @@ import { Button, Form, InputOnChangeData, Progress } from "semantic-ui-react";
 import { useEffect, useState } from "react";
 import { IGetPrimesMessage, IGetRrsMessage, isFinishMessage, isProgressMessage } from "./types";
 import FormatNumbers from "./FormatNumbers";
+import { euler } from "./helpers/euler";
 
 let worker: Worker;
 
@@ -55,13 +56,15 @@ export default function Lab2() {
                 label="Enter m:"
                 onChange={handleChange}
             />
+
             <Button type="button" onClick={getPrimes}>Get primes</Button>
             <Button type="button" onClick={getRrs}>Get Reduced residue system</Button>
+            <Button type="button" active>{String.fromCharCode(966)}(m) = {euler(m)}</Button>
+
             {!!progress && <Progress progress="percent" percent={progress.toFixed(2)} color="violet" />}
+
             <p>Amount: {result.length}</p>
-            <p className="result-container">
-                <FormatNumbers numbers={result} />
-            </p>
+            <FormatNumbers numbers={result} />
         </Form>
     );
 }
