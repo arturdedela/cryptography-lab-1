@@ -18,6 +18,11 @@ export interface IGetPrimesMessage extends IWorkerMessage {
     m: number;
 }
 
+export interface IGetRrsMessage extends IWorkerMessage {
+    action: "get_rrs";
+    m: number;
+}
+
 
 export function isProgressMessage(message: IWorkerMessage): message is IProgressMessage {
     return message.action === "progress";
@@ -29,4 +34,8 @@ export function isFinishMessage(message: IWorkerMessage): message is IFinishMess
 
 export function isGetPrimesMessage(message: IWorkerMessage): message is IGetPrimesMessage {
     return message.action === "get_primes";
+}
+
+export function isGetRrsMessage(message: IWorkerMessage): message is IGetRrsMessage {
+    return message.action === "get_rrs";
 }

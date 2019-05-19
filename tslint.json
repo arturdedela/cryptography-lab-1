@@ -29,6 +29,7 @@
         "jsx-boolean-value": false,
         "no-bitwise": false,
         "no-unused-expression": false,
-        "one-variable-per-declaration": false
+        "one-variable-per-declaration": false,
+        "jsx-no-lambda": false
     }
 }

@@ -3,11 +3,12 @@ import "./style.scss";
 import * as Worker from "./lab2.worker";
 import { Button, Form, InputOnChangeData, Progress } from "semantic-ui-react";
 import { useEffect, useState } from "react";
-import { IGetPrimesMessage, isFinishMessage, isProgressMessage } from "./types";
+import { IGetPrimesMessage, IGetRrsMessage, isFinishMessage, isProgressMessage } from "./types";
+import FormatNumbers from "./FormatNumbers";
 
+let worker: Worker;
 
 export default function Lab2() {
-    const [worker] = useState<Worker>(new (Worker as any)());
     const [m, setM] = useState<number>(0);
     const [result, setResult] = useState<number[]>([]);
     const [progress, setProgress] = useState<number>(0);
@@ -21,17 +22,25 @@ export default function Lab2() {
             }
             else if (isFinishMessage(data)) {
                 setResult(data.result);
+                setProgress(0);
             }
         }
 
+        worker = new (Worker as any)();
         worker.addEventListener("message", handleWorkerMessage);
 
-        return () => worker.removeEventListener("message", handleWorkerMessage);
+        return () => worker.terminate();
     }, []);
 
     function getPrimes() {
         setResult([]);
         const message: IGetPrimesMessage = { action: "get_primes", m };
+        worker.postMessage(message);
+    }
+
+    function getRrs() {
+        setResult([]);
+        const message: IGetRrsMessage = { action: "get_rrs", m };
         worker.postMessage(message);
     }
 
@@ -47,9 +56,11 @@ export default function Lab2() {
                 onChange={handleChange}
             />
             <Button type="button" onClick={getPrimes}>Get primes</Button>
+            <Button type="button" onClick={getRrs}>Get Reduced residue system</Button>
             {!!progress && <Progress progress="percent" percent={progress.toFixed(2)} color="violet" />}
+            <p>Amount: {result.length}</p>
             <p className="result-container">
-                {result.toString()}
+                <FormatNumbers numbers={result} />
             </p>
         </Form>
     );
