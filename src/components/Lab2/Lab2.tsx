@@ -3,22 +3,32 @@ import "./style.scss";
 import * as Worker from "./lab2.worker";
 import { Button, Form, InputOnChangeData, Progress } from "semantic-ui-react";
 import { useEffect, useState } from "react";
-import { IGetPrimesMessage, IGetRrsMessage, isFinishMessage, isProgressMessage } from "./types";
-import FormatNumbers from "./FormatNumbers";
+import {
+    IGetPrimeFactorizationMessage,
+    IGetPrimesMessage,
+    IGetRrsMessage,
+    isFinishMessage,
+    isProgressMessage, isReadyMessage
+} from "./types";
+import FormatResult from "./FormatResult";
 import { euler } from "./helpers/euler";
+
 
 let worker: Worker;
 
 export default function Lab2() {
     const [m, setM] = useState<number>(0);
-    const [result, setResult] = useState<number[]>([]);
+    const [result, setResult] = useState<number[] | Record<number, number>>([]);
     const [progress, setProgress] = useState<number>(0);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         function handleWorkerMessage(e: MessageEvent) {
             const { data } = e;
 
-            if (isProgressMessage(data)) {
+            if (isReadyMessage(data)) {
+                setLoading(false);
+            } else if (isProgressMessage(data)) {
                 setProgress(data.progress);
             }
             else if (isFinishMessage(data)) {
@@ -45,12 +55,18 @@ export default function Lab2() {
         worker.postMessage(message);
     }
 
+    function getPrimeFactorization() {
+        setResult({});
+        const message: IGetPrimeFactorizationMessage = { action: "get_prime_factorization", m };
+        worker.postMessage(message);
+    }
+
     function handleChange(e: React.ChangeEvent, data: InputOnChangeData) {
         setM(parseInt(data.value, 10));
     }
 
     return (
-        <Form>
+        <Form loading={loading}>
             <Form.Input
                 type="number"
                 label="Enter m:"
@@ -60,11 +76,11 @@ export default function Lab2() {
             <Button type="button" onClick={getPrimes}>Get primes</Button>
             <Button type="button" onClick={getRrs}>Get Reduced residue system</Button>
             <Button type="button" active>{String.fromCharCode(966)}(m) = {euler(m)}</Button>
+            <Button type="button" onClick={getPrimeFactorization}>Get prime factorization</Button>
 
             {!!progress && <Progress progress="percent" percent={progress.toFixed(2)} color="violet" />}
 
-            <p>Amount: {result.length}</p>
-            <FormatNumbers numbers={result} />
+            <FormatResult result={result} />
         </Form>
     );
 }
