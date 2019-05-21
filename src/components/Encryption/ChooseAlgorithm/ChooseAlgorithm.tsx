@@ -19,6 +19,7 @@ class ChooseAlgorithm extends React.Component<IProps> {
         { text: "Vernam", value: AlgorithmNames.Vernam },
         { text: "DES", value: AlgorithmNames.DES },
         { text: "RC4", value: AlgorithmNames.RC4 },
+        { text: "A5", value: AlgorithmNames.A5 }
     ];
 
     @observable private algorithm: AlgorithmNames;
