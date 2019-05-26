@@ -1,6 +1,5 @@
 import * as React from "react";
 import "./style.scss";
-import * as Worker from "./lab2.worker";
 import { Button, Form, InputOnChangeData, Progress } from "semantic-ui-react";
 import { useEffect, useState } from "react";
 import {
@@ -8,27 +7,23 @@ import {
     IGetPrimesMessage,
     IGetRrsMessage,
     isFinishMessage,
-    isProgressMessage, isReadyMessage
+    isProgressMessage
 } from "./types";
 import FormatResult from "./FormatResult";
 import { euler } from "./helpers/euler";
+import { lab2Worker } from "../../App";
 
-
-let worker: Worker;
 
 export default function Lab2() {
     const [m, setM] = useState<number>(0);
     const [result, setResult] = useState<number[] | Record<number, number>>([]);
     const [progress, setProgress] = useState<number>(0);
-    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         function handleWorkerMessage(e: MessageEvent) {
             const { data } = e;
 
-            if (isReadyMessage(data)) {
-                setLoading(false);
-            } else if (isProgressMessage(data)) {
+            if (isProgressMessage(data)) {
                 setProgress(data.progress);
             }
             else if (isFinishMessage(data)) {
@@ -37,28 +32,27 @@ export default function Lab2() {
             }
         }
 
-        worker = new (Worker as any)();
-        worker.addEventListener("message", handleWorkerMessage);
+        lab2Worker.addEventListener("message", handleWorkerMessage);
 
-        return () => worker.terminate();
+        return () => lab2Worker.removeEventListener("message", handleWorkerMessage);
     }, []);
 
     function getPrimes() {
         setResult([]);
         const message: IGetPrimesMessage = { action: "get_primes", m };
-        worker.postMessage(message);
+        lab2Worker.postMessage(message);
     }
 
     function getRrs() {
         setResult([]);
         const message: IGetRrsMessage = { action: "get_rrs", m };
-        worker.postMessage(message);
+        lab2Worker.postMessage(message);
     }
 
     function getPrimeFactorization() {
         setResult({});
         const message: IGetPrimeFactorizationMessage = { action: "get_prime_factorization", m };
-        worker.postMessage(message);
+        lab2Worker.postMessage(message);
     }
 
     function handleChange(e: React.ChangeEvent, data: InputOnChangeData) {
@@ -66,7 +60,7 @@ export default function Lab2() {
     }
 
     return (
-        <Form loading={loading}>
+        <Form>
             <Form.Input
                 type="number"
                 label="Enter m:"
