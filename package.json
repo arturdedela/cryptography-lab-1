@@ -30,7 +30,7 @@
     "husky": "^2.3.0",
     "inversify": "latest",
     "inversify-binding-decorators": "latest",
-    "lint-staged": "^8.1.7",
+    "lint-staged": "^13.1.0",
     "mobx": "^5.9.0",
     "mobx-react": "^5.4.3",
     "react": "^16.8.3",
